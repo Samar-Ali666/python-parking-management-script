@@ -47,11 +47,40 @@ def checkSpaceAvailability(requestedDay):
     return spaces_occupied_at_requestedDay
 
 
-def createBooking(visitorName, licence, requestedDay):
+def isAccessibleParking():
+    parkingType = input('Do you want accessible parking spaces? (yes/no): \n')
+
+    if parkingType == 'yes':
+        return True
+    else:
+        return False
+
+
+def assignGeneralSpace(visitorName, licence, requestedDay):
+    generalSpaceNumber = 20
+
+    for booking in bookings:
+        if booking['requestedDay'] == requestedDay and booking['parkingNumber'] != generalSpaceNumber:
+            generalSpaceNumber = maxParkingSpace
+        else:
+            generalSpaceNumber = generalSpaceNumber - 1
+
+    createBooking(visitorName, licence, requestedDay, generalSpaceNumber)
+
+
+def assignAccessibleSpace(visitorName, licence, requestedDay):
+    accessibleSpaceNumber = checkSpaceAvailability(requestedDay)
+
+    createBooking(visitorName, licence, requestedDay,
+                  accessibleSpaceNumber + 1)
+
+
+def createBooking(visitorName, licence, requestedDay, parkingNumber):
     newBooking = {}
     newBooking['visitorName'] = visitorName
     newBooking['licence'] = licence
     newBooking['requestedDay'] = requestedDay
+    newBooking['parkingNumber'] = parkingNumber
 
     bookings.append(newBooking)
 
@@ -61,13 +90,19 @@ while continueProgram:
     parkingSpace = checkSpaceAvailability(requestedDay)
 
     if parkingSpace != -1:
+        accessibleParking = isAccessibleParking()
         visitorName = getVisitorName()
         carLicence = getCarLicence()
 
-        createBooking(visitorName, carLicence, requestedDay)
+        if accessibleParking:
+            assignAccessibleSpace(visitorName, carLicence, requestedDay)
+        else:
+            assignGeneralSpace(visitorName, carLicence, requestedDay)
 
-        print('Parking has been reserved! \nDay ' + str(requestedDay) +
-              '\nParking number: ' + str(parkingSpace + 1))
+        print(bookings)
+
+        # print('Parking has been reserved! \nDay ' + str(requestedDay) +
+        #       '\nParking number: ' + str(parkingSpace + 1))
 
         continueProgram = input('Continue (yes/no): \n')
         continueProgram = False if continueProgram == 'no' else continueProgram

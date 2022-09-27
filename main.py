@@ -1,4 +1,35 @@
-bookings = []
+bookings = [
+    {
+        "visitorName": "John Doe",
+        "licence": "HJHDKFHD679787",
+        "requestedDay": 4,
+        "parkingNumber": 5
+    },
+    {
+        "visitorName": "John Doe",
+        "licence": "HJHDKFHD679787",
+        "requestedDay": 4,
+        "parkingNumber": 2
+    },
+    {
+        "visitorName": "Williams Smith",
+        "licence": "HJHDKFHD679787",
+        "requestedDay": 4,
+        "parkingNumber": 4
+    },
+    {
+        "visitorName": "Rico Suave",
+        "licence": "HJHDKFHD679787",
+        "requestedDay": 4,
+        "parkingNumber": 8
+    },
+    {
+        "visitorName": "Rico Suave",
+        "licence": "HJHDKFHD679787",
+        "requestedDay": 6,
+        "parkingNumber": 2
+    },
+]
 
 maxParkingSpace = 20
 continueProgram = True
@@ -75,6 +106,39 @@ def assignAccessibleSpace(visitorName, licence, requestedDay):
                   accessibleSpaceNumber + 1)
 
 
+def showStats():
+    userInput = input('1) Add Booking \n2) Show Stats: \n')
+
+    if userInput == '2':
+        return True
+    elif userInput == '1':
+        return False
+
+
+def showStatsOptions():
+    print('Choose the stats you want to see \n')
+    print('1) See numbers of accessible spaces used any of the 14 days \n')
+
+    userInput = input()
+
+    if userInput == '1':
+        showSingleDayAccessibleStats()
+
+
+def showSingleDayAccessibleStats():
+    requestedDay = int(input(
+        'Enter the day you want to See the accessible stats: \n'))
+
+    accessibleSpacesOnRequestedDay = 0
+
+    for booking in bookings:
+        if booking["requestedDay"] == requestedDay and booking['parkingNumber'] <= 5:
+            accessibleSpacesOnRequestedDay += 1
+
+    print('Total Accessible spaces used: ' +
+          str(accessibleSpacesOnRequestedDay))
+
+
 def createBooking(visitorName, licence, requestedDay, parkingNumber):
     newBooking = {}
     newBooking['visitorName'] = visitorName
@@ -86,25 +150,32 @@ def createBooking(visitorName, licence, requestedDay, parkingNumber):
 
 
 while continueProgram:
-    requestedDay = getRequestedDay()
-    parkingSpace = checkSpaceAvailability(requestedDay)
 
-    if parkingSpace != -1:
-        accessibleParking = isAccessibleParking()
-        visitorName = getVisitorName()
-        carLicence = getCarLicence()
+    isShowStats = showStats()
 
-        if accessibleParking:
-            assignAccessibleSpace(visitorName, carLicence, requestedDay)
+    if not isShowStats:
+        requestedDay = getRequestedDay()
+        parkingSpace = checkSpaceAvailability(requestedDay)
+
+        if parkingSpace != -1:
+            accessibleParking = isAccessibleParking()
+            visitorName = getVisitorName()
+            carLicence = getCarLicence()
+
+            if accessibleParking:
+                assignAccessibleSpace(visitorName, carLicence, requestedDay)
+            else:
+                assignGeneralSpace(visitorName, carLicence, requestedDay)
+
+            print(bookings)
+
+            # print('Parking has been reserved! \nDay ' + str(requestedDay) +
+            #       '\nParking number: ' + str(parkingSpace + 1))
+
+            continueProgram = input('Continue (yes/no): \n')
+            continueProgram = False if continueProgram == 'no' else continueProgram
         else:
-            assignGeneralSpace(visitorName, carLicence, requestedDay)
+            print('No Spaces available at requeted Day! Select Another day \n')
 
-        print(bookings)
-
-        # print('Parking has been reserved! \nDay ' + str(requestedDay) +
-        #       '\nParking number: ' + str(parkingSpace + 1))
-
-        continueProgram = input('Continue (yes/no): \n')
-        continueProgram = False if continueProgram == 'no' else continueProgram
     else:
-        print('No Spaces available at requeted Day! Select Another day \n')
+        showStatsOptions()

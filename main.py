@@ -29,6 +29,30 @@ bookings = [
         "requestedDay": 6,
         "parkingNumber": 2
     },
+    {
+        "visitorName": "Rico Suave",
+        "licence": "HJHDKFHD679787",
+        "requestedDay": 6,
+        "parkingNumber": 20
+    },
+    {
+        "visitorName": "Rico Suave",
+        "licence": "HJHDKFHD679787",
+        "requestedDay": 6,
+        "parkingNumber": 19
+    },
+    {
+        "visitorName": "Rico Suave",
+        "licence": "HJHDKFHD679787",
+        "requestedDay": 6,
+        "parkingNumber": 18
+    },
+    {
+        "visitorName": "Rico Suave",
+        "licence": "HJHDKFHD679787",
+        "requestedDay": 6,
+        "parkingNumber": 17
+    },
 ]
 
 maxParkingSpace = 20
@@ -118,11 +142,26 @@ def showStats():
 def showStatsOptions():
     print('Choose the stats you want to see \n')
     print('1) See numbers of accessible spaces used any of the 14 days \n')
+    print('2) See numbers of general spaces used any of the 14 days \n')
+    print('3) See Total numbers of spaces on any of the 14 days \n')
+    print('4) See Total numbers of accessible spaces on whole period (14 Days) \n')
+    print('5) See Total numbers of general spaces on whole period (14 Days) \n')
+    print('6) See Total numbers of spaces on whole period (14 Days) \n')
 
     userInput = input()
 
     if userInput == '1':
         showSingleDayAccessibleStats()
+    elif userInput == '2':
+        showSingleDayGeneralStats()
+    elif userInput == '3':
+        totalSpacesOnRequestedDay()
+    elif userInput == '4':
+        wholePeriodAccessibleSpaces()
+    elif userInput == '5':
+        wholePeriodGeneralSpaces()
+    elif userInput == '6':
+        wholePeriodTotalSpaces()
 
 
 def showSingleDayAccessibleStats():
@@ -137,6 +176,66 @@ def showSingleDayAccessibleStats():
 
     print('Total Accessible spaces used: ' +
           str(accessibleSpacesOnRequestedDay))
+
+
+def showSingleDayGeneralStats():
+    requestedDay = int(input(
+        'Enter the day you want to See the general Stats: \n'))
+
+    generalSpacesOnRequestedDay = 0
+
+    for booking in bookings:
+        if booking["requestedDay"] == requestedDay and booking["parkingNumber"] >= 6:
+            generalSpacesOnRequestedDay += 1
+
+    print('Total General spaces used: ' +
+          str(generalSpacesOnRequestedDay))
+
+
+def totalSpacesOnRequestedDay():
+    requestedDay = int(input(
+        'Enter the day you want to See the total space Stats: \n'))
+
+    totalSpacesOccupied = 0
+
+    for booking in bookings:
+        if booking["requestedDay"] == requestedDay:
+            totalSpacesOccupied += 1
+
+    print('Total spaces used: ' +
+          str(totalSpacesOccupied))
+
+
+def wholePeriodAccessibleSpaces():
+    totalAccessibleSpaces = 0
+
+    for booking in bookings:
+        if booking["parkingNumber"] <= 5:
+            totalAccessibleSpaces += 1
+
+    print('Total accessible spaces used (in 14 days): ' +
+          str(totalAccessibleSpaces))
+
+
+def wholePeriodGeneralSpaces():
+    totalGeneralSpaces = 0
+
+    for booking in bookings:
+        if booking["parkingNumber"] >= 6:
+            totalGeneralSpaces += 1
+
+    print('Total general spaces used (in 14 days): ' +
+          str(totalGeneralSpaces))
+
+
+def wholePeriodTotalSpaces():
+    totalSpaces = 0
+
+    for booking in bookings:
+        totalSpaces += 1
+
+    print('Total spaces used (in 14 days): ' +
+          str(totalSpaces))
 
 
 def createBooking(visitorName, licence, requestedDay, parkingNumber):
@@ -174,8 +273,5 @@ while continueProgram:
 
             continueProgram = input('Continue (yes/no): \n')
             continueProgram = False if continueProgram == 'no' else continueProgram
-        else:
-            print('No Spaces available at requeted Day! Select Another day \n')
-
     else:
         showStatsOptions()
